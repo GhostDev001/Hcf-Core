@@ -3,7 +3,7 @@ package me.etudes.hcf.api.deathban;
 public class DeathbanUtils {
 
     public static final long DEATHBAN_MS = 3600000;
-    public static final long REGEN_MS = 30000;
+    public static final long REGEN_MS = 3600000;
     public static final long REGEN_TICKS = REGEN_MS / 50;
 
     private DeathbanUtils() {}
