@@ -2,6 +2,7 @@ package me.etudes.hcf.config;
 
 import me.etudes.hcf.api.faction.Faction;
 import me.etudes.hcf.api.faction.FactionUtils;
+import me.etudes.hcf.api.faction.dtr.DtrState;
 import me.etudes.hcf.api.player.PlayerConfig;
 import me.etudes.hcf.api.player.PlayerUtils;
 import me.etudes.hcf.main.HCF;
@@ -42,7 +43,9 @@ public class FactionConfig extends Config {
         factionSection.set("coleaders", new ArrayList<String>());
         factionSection.set("captains", new ArrayList<String>());
         factionSection.set("members", new ArrayList<String>());
-        factionSection.set("balance", 0);
+        factionSection.set("balance", faction.getBalance());
+        factionSection.set("dtr", faction.getDtr());
+        factionSection.set("dtr-state", faction.getDtrState().toInt());
 
         leader.sendMessage(ChatColor.GREEN + "Faction " + name + " has been created");
 
@@ -88,6 +91,25 @@ public class FactionConfig extends Config {
 
     public int getBalance(String name) {
         return config.getInt("factions." + name + ".balance");
+    }
+
+    public double getDtr(String name) {
+        return config.getDouble("factions." + name + ".dtr");
+    }
+
+    public DtrState getDtrState(String name) {
+        int state = config.getInt("factions." + name + ".dtr-state");
+        return DtrState.fromInt(state);
+    }
+
+    public void setDtr(String name, double dtr) {
+        dtr = (double)Math.round(dtr*100)/100;
+        config.set("factions." + name + ".dtr", dtr);
+        saveConfig();
+    }
+
+    public void setDtrState(String name, DtrState state) {
+        config.set("factions." + name + ".dtr-state", state.toInt());
     }
 
     public List<String> getAll(String name) {

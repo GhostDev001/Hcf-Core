@@ -1,5 +1,6 @@
 package me.etudes.hcf.api.faction;
 
+import me.etudes.hcf.api.faction.dtr.DtrState;
 import me.etudes.hcf.main.HCF;
 import org.bukkit.entity.Player;
 
@@ -14,6 +15,8 @@ public class Faction {
 
     private double dtr;
 
+    private DtrState dtrState;
+
     private int size;
     private int balance;
 
@@ -22,14 +25,15 @@ public class Faction {
     private UUID leaderId;
 
     public Faction(String name, Player leader, HCF plugin) {
-        this(name, 1, 0, FactionUtils.calculateDtr(1), leader.getUniqueId(), plugin, true);
+        this(name, 1, 0, FactionUtils.calculateMaxDtr(1), DtrState.FULL, leader.getUniqueId(), plugin, true);
     }
 
-    public Faction(String name, int size, int balance, double dtr, UUID leaderId, HCF plugin, boolean addToFile) {
+    public Faction(String name, int size, int balance, double dtr, DtrState dtrState, UUID leaderId, HCF plugin, boolean addToFile) {
         this.name = name;
         this.size = size;
         this.balance = balance;
         this.dtr = dtr;
+        this.dtrState = dtrState;
         this.plugin = plugin;
         this.leaderId = leaderId;
 
@@ -77,6 +81,10 @@ public class Faction {
         return dtr;
     }
 
+    public DtrState getDtrState() {
+        return dtrState;
+    }
+
     public int getSize() {
         return size;
     }
@@ -91,6 +99,12 @@ public class Faction {
 
     public void setDtr(double dtr) {
         this.dtr = dtr;
+        plugin.getFactionConfig().setDtr(name, dtr);
+    }
+
+    public void setDtrState(DtrState dtrState) {
+        this.dtrState = dtrState;
+        plugin.getFactionConfig().setDtrState(name, dtrState);
     }
 
 }

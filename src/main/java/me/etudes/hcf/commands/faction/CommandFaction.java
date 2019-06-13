@@ -87,14 +87,31 @@ public class CommandFaction implements CommandExecutor {
     private void displayTeamInfo(Player player) {
         Faction faction = FactionUtils.getFaction(player);
         String bar = ChatColor.GRAY + "" + ChatColor.STRIKETHROUGH + StringUtils.repeat(" ", 80);
+
         String onlineFraction = ChatColor.WHITE + "[" + faction.getOnline() + "/" + faction.getSize() + "]";
+
         StringBuilder leaderBuilder = new StringBuilder();
         Player leader = plugin.getServer().getPlayer(faction.getLeaderId());
         leaderBuilder.append(leader != null ? ChatColor.GREEN.toString() : ChatColor.GRAY.toString());
         leaderBuilder.append(PlayerUtils.getName(faction.getLeaderId()));
+
         String coleaderList = FactionUtils.formatPlayerList(faction.getColeaders());
         String captainList = FactionUtils.formatPlayerList(faction.getCaptains());
         String memberList = FactionUtils.formatPlayerList(faction.getMembers());
+
+        String stateStr = "";
+        switch(faction.getDtrState()) {
+            case FROZEN:
+                stateStr = ChatColor.RED.toString() + faction.getDtr() + '■';
+                break;
+            case REGEN:
+                stateStr = ChatColor.GREEN.toString() + faction.getDtr() + '▲';
+                break;
+            case FULL:
+                stateStr = ChatColor.GREEN.toString() + faction.getDtr() + '◄';
+                break;
+        }
+
         player.sendMessage(bar);
         player.sendMessage(ChatColor.YELLOW + "Faction: " + ChatColor.WHITE + faction.getName());
         player.sendMessage(ChatColor.YELLOW + "Online players: " + onlineFraction);
@@ -102,7 +119,7 @@ public class CommandFaction implements CommandExecutor {
         player.sendMessage(ChatColor.YELLOW + "Co-leaders: " + coleaderList);
         player.sendMessage(ChatColor.YELLOW + "Captains: " + captainList);
         player.sendMessage(ChatColor.YELLOW + "Members: " + memberList);
-        player.sendMessage(ChatColor.YELLOW + "DTR: " + ChatColor.GREEN + faction.getDtr() + "◄");
+        player.sendMessage(ChatColor.YELLOW + "DTR: " + stateStr);
         player.sendMessage(ChatColor.YELLOW + "Balance: " + ChatColor.WHITE + "$" + faction.getBalance());
         player.sendMessage(bar);
     }

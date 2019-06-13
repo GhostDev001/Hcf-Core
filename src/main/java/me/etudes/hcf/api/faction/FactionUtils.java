@@ -1,5 +1,6 @@
 package me.etudes.hcf.api.faction;
 
+import me.etudes.hcf.api.faction.dtr.DtrState;
 import me.etudes.hcf.api.player.PlayerConfig;
 import me.etudes.hcf.config.FactionConfig;
 import me.etudes.hcf.main.HCF;
@@ -30,9 +31,10 @@ public class FactionUtils {
         List<String> all = factionConfig.getAll(name);
         int size = all.size();
         int balance = factionConfig.getBalance(name);
-        double dtr = calculateDtr(size);
+        double dtr = factionConfig.getDtr(name);
+        DtrState state = factionConfig.getDtrState(name);
         UUID leaderId = factionConfig.getLeaderId(name);
-        return new Faction(name, size, balance, dtr, leaderId, plugin, false);
+        return new Faction(name, size, balance, dtr, state, leaderId, plugin, false);
     }
 
     public static Faction getFaction(Player player) {
@@ -78,7 +80,12 @@ public class FactionUtils {
         return output.toString();
     }
 
-    public static double calculateDtr(int size) {
+    public static boolean hasFaction(Player player) {
+        PlayerConfig config = HCF.getPlugin(HCF.class).getPlayerConfig();
+        return config.hasFaction(player);
+    }
+
+    public static double calculateMaxDtr(int size) {
         double output;
         switch (size) {
             case 1:
