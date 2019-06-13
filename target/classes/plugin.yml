@@ -10,3 +10,5 @@ commands:
       - f
       - team
       - t
+  revive:
+    description: revives a player if they are deathbanned

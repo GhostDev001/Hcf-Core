@@ -3,6 +3,7 @@ package me.etudes.hcf.main;
 import me.etudes.hcf.api.faction.FactionUtils;
 import me.etudes.hcf.api.player.PlayerConfig;
 import me.etudes.hcf.commands.faction.CommandFaction;
+import me.etudes.hcf.commands.pvp.CommandRevive;
 import me.etudes.hcf.config.FactionConfig;
 import me.etudes.hcf.events.PlayerEvents;
 import me.etudes.hcf.events.ServerEvents;
@@ -24,6 +25,7 @@ public class HCF extends JavaPlugin {
 
         // Commands
         this.getCommand(CommandFaction.name).setExecutor(new CommandFaction(this));
+        this.getCommand(CommandRevive.name).setExecutor(new CommandRevive(this));
 
         this.getLogger().info("HCF core enabled");
     }

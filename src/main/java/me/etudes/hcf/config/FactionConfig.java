@@ -1,14 +1,11 @@
 package me.etudes.hcf.config;
 
 import me.etudes.hcf.api.faction.Faction;
-import me.etudes.hcf.api.faction.FactionUtils;
 import me.etudes.hcf.api.faction.dtr.DtrState;
 import me.etudes.hcf.api.player.PlayerConfig;
-import me.etudes.hcf.api.player.PlayerUtils;
 import me.etudes.hcf.main.HCF;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -46,6 +43,7 @@ public class FactionConfig extends Config {
         factionSection.set("balance", faction.getBalance());
         factionSection.set("dtr", faction.getDtr());
         factionSection.set("dtr-state", faction.getDtrState().toInt());
+        factionSection.set("regen-time", faction.getRegenTime());
 
         leader.sendMessage(ChatColor.GREEN + "Faction " + name + " has been created");
 
@@ -102,6 +100,10 @@ public class FactionConfig extends Config {
         return DtrState.fromInt(state);
     }
 
+    public long getRegenTime(String name) {
+        return config.getLong("factions." + name + ".regen-time");
+    }
+
     public void setDtr(String name, double dtr) {
         dtr = (double)Math.round(dtr*100)/100;
         config.set("factions." + name + ".dtr", dtr);
@@ -110,6 +112,12 @@ public class FactionConfig extends Config {
 
     public void setDtrState(String name, DtrState state) {
         config.set("factions." + name + ".dtr-state", state.toInt());
+        saveConfig();
+    }
+
+    public void setRegenTime(String name, long time) {
+        config.set("factions." + name + ".regen-time", time);
+        saveConfig();
     }
 
     public List<String> getAll(String name) {

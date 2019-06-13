@@ -1,5 +1,6 @@
 package me.etudes.hcf.commands.faction;
 
+import me.etudes.hcf.api.deathban.DeathbanUtils;
 import me.etudes.hcf.api.faction.Faction;
 import me.etudes.hcf.api.faction.FactionUtils;
 import me.etudes.hcf.api.player.PlayerConfig;
@@ -112,6 +113,9 @@ public class CommandFaction implements CommandExecutor {
                 break;
         }
 
+        long time = faction.getRegenTimeLeft();
+        String regenTime = ChatColor.WHITE + DeathbanUtils.formatDeathbanTime(time);
+
         player.sendMessage(bar);
         player.sendMessage(ChatColor.YELLOW + "Faction: " + ChatColor.WHITE + faction.getName());
         player.sendMessage(ChatColor.YELLOW + "Online players: " + onlineFraction);
@@ -120,6 +124,7 @@ public class CommandFaction implements CommandExecutor {
         player.sendMessage(ChatColor.YELLOW + "Captains: " + captainList);
         player.sendMessage(ChatColor.YELLOW + "Members: " + memberList);
         player.sendMessage(ChatColor.YELLOW + "DTR: " + stateStr);
+        player.sendMessage(ChatColor.YELLOW + "Time until regen: " + regenTime);
         player.sendMessage(ChatColor.YELLOW + "Balance: " + ChatColor.WHITE + "$" + faction.getBalance());
         player.sendMessage(bar);
     }

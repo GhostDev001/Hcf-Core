@@ -1,5 +1,6 @@
 package me.etudes.hcf.api.faction;
 
+import me.etudes.hcf.api.deathban.DeathbanUtils;
 import me.etudes.hcf.api.faction.dtr.DtrState;
 import me.etudes.hcf.main.HCF;
 import org.bukkit.entity.Player;
@@ -9,13 +10,13 @@ import java.util.List;
 import java.util.UUID;
 
 public class Faction {
-    //TODO: store dtr in yml because facs aren't always max stupid
 
     private String name;
 
     private double dtr;
-
     private DtrState dtrState;
+
+    private long regenTime;
 
     private int size;
     private int balance;
@@ -25,15 +26,16 @@ public class Faction {
     private UUID leaderId;
 
     public Faction(String name, Player leader, HCF plugin) {
-        this(name, 1, 0, FactionUtils.calculateMaxDtr(1), DtrState.FULL, leader.getUniqueId(), plugin, true);
+        this(name, 1, 0, FactionUtils.calculateMaxDtr(1), DtrState.FULL, 0, leader.getUniqueId(), plugin, true);
     }
 
-    public Faction(String name, int size, int balance, double dtr, DtrState dtrState, UUID leaderId, HCF plugin, boolean addToFile) {
+    public Faction(String name, int size, int balance, double dtr, DtrState dtrState, long regenTime, UUID leaderId, HCF plugin, boolean addToFile) {
         this.name = name;
         this.size = size;
         this.balance = balance;
         this.dtr = dtr;
         this.dtrState = dtrState;
+        this.regenTime = regenTime;
         this.plugin = plugin;
         this.leaderId = leaderId;
 
@@ -95,6 +97,24 @@ public class Faction {
 
     public UUID getLeaderId() {
         return leaderId;
+    }
+
+    public long getRegenTime() {
+        return regenTime;
+    }
+
+    public long getRegenTimeLeft() {
+        return regenTime - System.currentTimeMillis();
+    }
+
+    public void resetRegenTime() {
+        long time = DeathbanUtils.REGEN_MS + System.currentTimeMillis();
+        setRegenTime(time);
+        plugin.getFactionConfig().setRegenTime(name, time);
+    }
+
+    public void setRegenTime(long regenTime) {
+        this.regenTime = regenTime;
     }
 
     public void setDtr(double dtr) {

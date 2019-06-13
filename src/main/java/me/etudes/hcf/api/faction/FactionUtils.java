@@ -4,17 +4,9 @@ import me.etudes.hcf.api.faction.dtr.DtrState;
 import me.etudes.hcf.api.player.PlayerConfig;
 import me.etudes.hcf.config.FactionConfig;
 import me.etudes.hcf.main.HCF;
-import net.minecraft.util.org.apache.commons.io.IOUtils;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-import org.json.simple.parser.ParseException;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,8 +25,9 @@ public class FactionUtils {
         int balance = factionConfig.getBalance(name);
         double dtr = factionConfig.getDtr(name);
         DtrState state = factionConfig.getDtrState(name);
+        long regenTime = factionConfig.getRegenTime(name);
         UUID leaderId = factionConfig.getLeaderId(name);
-        return new Faction(name, size, balance, dtr, state, leaderId, plugin, false);
+        return new Faction(name, size, balance, dtr, state, regenTime, leaderId, plugin, false);
     }
 
     public static Faction getFaction(Player player) {
