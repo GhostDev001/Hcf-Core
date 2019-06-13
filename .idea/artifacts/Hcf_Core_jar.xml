@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="Hcf-Core:jar">
+    <output-path>$PROJECT_DIR$/../Test Server/plugins</output-path>
+    <root id="archive" name="Hcf-Core.jar">
+      <element id="module-output" name="Hcf-Core" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Test Server/PaperSpigot 1.7.10.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

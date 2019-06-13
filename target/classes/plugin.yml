@@ -1,0 +1,12 @@
+name: Hcf-Core
+version: "1.0"
+main: me.etudes.hcf.main.HCF
+author: Etudes
+description: basic hcf core
+
+commands:
+  faction:
+    aliases:
+      - f
+      - team
+      - t
