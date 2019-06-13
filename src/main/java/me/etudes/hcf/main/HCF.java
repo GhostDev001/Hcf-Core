@@ -1,6 +1,7 @@
 package me.etudes.hcf.main;
 
 import me.etudes.hcf.api.faction.FactionUtils;
+import me.etudes.hcf.api.player.PlayerConfig;
 import me.etudes.hcf.commands.faction.CommandFaction;
 import me.etudes.hcf.config.FactionConfig;
 import me.etudes.hcf.events.ServerEvents;
@@ -9,10 +10,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class HCF extends JavaPlugin {
 
     private FactionConfig factionConfig;
+    private PlayerConfig playerConfig;
 
     @Override
     public void onEnable() {
         factionConfig = new FactionConfig(this);
+        playerConfig = new PlayerConfig(this);
 
         // Events
         this.getServer().getPluginManager().registerEvents(new ServerEvents(this), this);
@@ -25,6 +28,10 @@ public class HCF extends JavaPlugin {
 
     public FactionConfig getFactionConfig() {
         return factionConfig;
+    }
+
+    public PlayerConfig getPlayerConfig() {
+        return playerConfig;
     }
 
 }

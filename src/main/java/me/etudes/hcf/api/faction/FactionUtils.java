@@ -1,5 +1,6 @@
 package me.etudes.hcf.api.faction;
 
+import me.etudes.hcf.api.player.PlayerConfig;
 import me.etudes.hcf.config.FactionConfig;
 import me.etudes.hcf.main.HCF;
 import net.minecraft.util.org.apache.commons.io.IOUtils;
@@ -30,17 +31,18 @@ public class FactionUtils {
         int size = all.size();
         int balance = factionConfig.getBalance(name);
         double dtr = calculateDtr(size);
-        Player leader = factionConfig.getLeader(name);
-        return new Faction(name, size, balance, dtr, leader, plugin, false);
+        UUID leaderId = factionConfig.getLeaderId(name);
+        return new Faction(name, size, balance, dtr, leaderId, plugin, false);
     }
 
     public static Faction getFaction(Player player) {
-        FactionConfig factionConfig = HCF.getPlugin(HCF.class).getFactionConfig();
-        String name = factionConfig.getFactionName(player);
+        PlayerConfig playerConfig = HCF.getPlugin(HCF.class).getPlayerConfig();
+        String name = playerConfig.getFactionName(player);
         return getFaction(name);
     }
 
     public static String formatPlayerList(List<String> players) {
+        PlayerConfig playerConfig = HCF.getPlugin(HCF.class).getPlayerConfig();
         StringBuilder output = new StringBuilder();
         HCF plugin = HCF.getPlugin(HCF.class);
         List<String> onlinePlayers = new ArrayList<String>();
@@ -48,10 +50,10 @@ public class FactionUtils {
 
         for(String playerId : players) {
             try {
-                Player player = plugin.getServer().getPlayer(playerId);
+                Player player = plugin.getServer().getPlayer(UUID.fromString(playerId));
                 onlinePlayers.add(ChatColor.GREEN + player.getName());
             } catch(NullPointerException e) {
-                offlinePlayers.add(ChatColor.GRAY + getName(playerId));
+                offlinePlayers.add(ChatColor.GRAY + playerConfig.getName(playerId));
             }
         }
 
@@ -99,20 +101,6 @@ public class FactionUtils {
                 break;
         }
         return output;
-    }
-
-    public static String getName(String uuid) {
-        String url = "https://api.mojang.com/user/profiles/"+uuid.replace("-", "")+"/names";
-        try {
-            String nameJson = IOUtils.toString(new URL(url));
-            JSONArray nameValue = (JSONArray) JSONValue.parseWithException(nameJson);
-            String playerSlot = nameValue.get(nameValue.size()-1).toString();
-            JSONObject nameObject = (JSONObject) JSONValue.parseWithException(playerSlot);
-            return nameObject.get("name").toString();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "error";
     }
 
 }

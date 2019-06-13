@@ -1,9 +1,13 @@
 package me.etudes.hcf.config;
 
 import me.etudes.hcf.api.faction.Faction;
+import me.etudes.hcf.api.faction.FactionUtils;
+import me.etudes.hcf.api.player.PlayerConfig;
+import me.etudes.hcf.api.player.PlayerUtils;
 import me.etudes.hcf.main.HCF;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -32,7 +36,7 @@ public class FactionConfig extends Config {
 
         // set leader
         factionSection.set("leader", leaderId.toString());
-        config.getConfigurationSection("faction-members").set(leaderId.toString(), name);
+        plugin.getPlayerConfig().setFaction(plugin.getServer().getPlayer(leaderId), faction);
 
         // init other sections
         factionSection.set("coleaders", new ArrayList<String>());
@@ -45,6 +49,20 @@ public class FactionConfig extends Config {
         saveConfig();
     }
 
+    public void removeFaction(Faction faction) {
+        PlayerConfig playerConfig = plugin.getPlayerConfig();
+        for(String uuid : faction.getAll()) {
+            ConfigurationSection section = playerConfig.getConfig().getConfigurationSection(uuid);
+           section.set("faction", null);
+        }
+        playerConfig.saveConfig();
+
+        String name = faction.getName();
+        ConfigurationSection section = config.getConfigurationSection("factions");
+        section.set(name, null);
+        saveConfig();
+    }
+
     public void addPlayer(Player player, Faction faction) {
         UUID uuid = player.getUniqueId();
         String name = faction.getName();
@@ -52,21 +70,8 @@ public class FactionConfig extends Config {
         saveConfig();
     }
 
-    public boolean hasFaction(Player player) {
-        String playerId = player.getUniqueId().toString();
-        ConfigurationSection memberConfig = config.getConfigurationSection("faction-members");
-        return memberConfig.contains(playerId);
-    }
-
-    public String getFactionName(Player player) {
-        String playerId = player.getUniqueId().toString();
-        ConfigurationSection memberConfig = config.getConfigurationSection("faction-members");
-        return memberConfig.getString(playerId);
-    }
-
-    public Player getLeader(String name) {
-        UUID uuid = UUID.fromString(config.getString("factions." + name + ".leader"));
-        return plugin.getServer().getPlayer(uuid);
+    public UUID getLeaderId(String name) {
+        return UUID.fromString(config.getString("factions." + name + ".leader"));
     }
 
     public List<String> getColeaders(String name) {
@@ -91,7 +96,7 @@ public class FactionConfig extends Config {
         List<String> members = getMembers(name);
         coleaders.addAll(captains);
         coleaders.addAll(members);
-        coleaders.add(getLeader(name).getUniqueId().toString());
+        coleaders.add(getLeaderId(name).toString());
         return coleaders;
     }
 

@@ -22,33 +22,22 @@ public class Faction {
     private UUID leaderId;
 
     public Faction(String name, Player leader, HCF plugin) {
-        this(name, 1, 0, FactionUtils.calculateDtr(1), leader, plugin, true);
+        this(name, 1, 0, FactionUtils.calculateDtr(1), leader.getUniqueId(), plugin, true);
     }
 
-    public Faction(String name, int size, int balance, double dtr, Player leader, HCF plugin, boolean addToFile) {
+    public Faction(String name, int size, int balance, double dtr, UUID leaderId, HCF plugin, boolean addToFile) {
         this.name = name;
         this.size = size;
         this.balance = balance;
         this.dtr = dtr;
         this.plugin = plugin;
-        leaderId = leader.getUniqueId();
+        this.leaderId = leaderId;
 
         if(addToFile) plugin.getFactionConfig().addFaction(this);
     }
 
     public void addPlayer(Player player) {
         plugin.getFactionConfig().addPlayer(player, this);
-    }
-
-    public List<Player> getOnlinePlayers() {
-        List<String> all = plugin.getFactionConfig().getAll(name);
-        List<Player> output = new ArrayList<Player>();
-        for(String uuidStr : all) {
-            UUID uuid = UUID.fromString(uuidStr);
-            Player player = plugin.getServer().getPlayer(uuid);
-            if(player.isOnline()) output.add(player);
-        }
-        return output;
     }
 
     public int getOnline() {
@@ -74,6 +63,10 @@ public class Faction {
 
     public List<String> getMembers() {
         return plugin.getFactionConfig().getMembers(this);
+    }
+
+    public List<String> getAll() {
+        return plugin.getFactionConfig().getAll(this);
     }
 
     public String getName() {

@@ -2,6 +2,8 @@ package me.etudes.hcf.commands.faction;
 
 import me.etudes.hcf.api.faction.Faction;
 import me.etudes.hcf.api.faction.FactionUtils;
+import me.etudes.hcf.api.player.PlayerConfig;
+import me.etudes.hcf.api.player.PlayerUtils;
 import me.etudes.hcf.config.FactionConfig;
 import me.etudes.hcf.main.HCF;
 import org.apache.commons.lang.StringUtils;
@@ -42,22 +44,39 @@ public class CommandFaction implements CommandExecutor {
                           args[0].equalsIgnoreCase("show") ||
                           args[0].equalsIgnoreCase("i") ||
                           args[0].equalsIgnoreCase("info")) {
-                    FactionConfig factionConfig = plugin.getFactionConfig();
-                    if(factionConfig.hasFaction(player)) {
+                    PlayerConfig playerConfig = plugin.getPlayerConfig();
+                    if(playerConfig.hasFaction(player)) {
                         displayTeamInfo(player);
+                    } else {
+                        player.sendMessage(ChatColor.RED + "You are not in a faction");
+                    }
+                } else if(args[0].equalsIgnoreCase("disband")) {
+                    if(plugin.getPlayerConfig().hasFaction(player)) {
+                        if (PlayerUtils.isLeader(player)) {
+                            Faction faction = FactionUtils.getFaction(player);
+                            FactionConfig factionConfig = plugin.getFactionConfig();
+                            factionConfig.removeFaction(faction);
+                            player.sendMessage(ChatColor.GREEN + faction.getName() + " has been disbanded");
+                        } else {
+                            player.sendMessage(ChatColor.RED + "Only faction leaders can disband");
+                        }
                     } else {
                         player.sendMessage(ChatColor.RED + "You are not in a faction");
                     }
                 }
                 break;
             case 2:
-                if(args[0].equalsIgnoreCase("create")) {
-                    new Faction(args[1], player, plugin);
+                PlayerConfig playerConfig = plugin.getPlayerConfig();
+                if(playerConfig.hasFaction(player)) {
+                    player.sendMessage(ChatColor.RED + "You are already in a faction");
+                } else if(args[0].equalsIgnoreCase("create")) {
+                    Faction faction = new Faction(args[1], player, plugin);
+                    plugin.getPlayerConfig().setFaction(player, faction);
                 }
                 break;
             default:
                 if(args[0].equalsIgnoreCase("create")) {
-                    player.sendMessage("Too many arguments!\nUsage: /f create <faction name>");
+                    player.sendMessage(ChatColor.RED + "Too many arguments!\nUsage: /f create <faction name>");
                 }
                 break;
         }
@@ -71,8 +90,8 @@ public class CommandFaction implements CommandExecutor {
         String onlineFraction = ChatColor.WHITE + "[" + faction.getOnline() + "/" + faction.getSize() + "]";
         StringBuilder leaderBuilder = new StringBuilder();
         Player leader = plugin.getServer().getPlayer(faction.getLeaderId());
-        leaderBuilder.append(leader.isOnline() ? ChatColor.GREEN.toString() : ChatColor.GRAY.toString());
-        leaderBuilder.append(leader.getName());
+        leaderBuilder.append(leader != null ? ChatColor.GREEN.toString() : ChatColor.GRAY.toString());
+        leaderBuilder.append(PlayerUtils.getName(faction.getLeaderId()));
         String coleaderList = FactionUtils.formatPlayerList(faction.getColeaders());
         String captainList = FactionUtils.formatPlayerList(faction.getCaptains());
         String memberList = FactionUtils.formatPlayerList(faction.getMembers());

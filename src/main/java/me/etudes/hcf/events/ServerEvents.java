@@ -1,6 +1,7 @@
 package me.etudes.hcf.events;
 
 import me.etudes.hcf.main.HCF;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -15,6 +16,10 @@ public class ServerEvents implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        if(!player.hasPlayedBefore()) {
+            plugin.getPlayerConfig().addPlayer(player);
+        }
     }
 
 }
